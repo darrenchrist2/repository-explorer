@@ -202,3 +202,18 @@ function IconButton({ icon: Icon, onClick, active, label, title }) {
         </button>
     );
 }
+
+function SkeletonCard() {
+    return (
+        <div className="border-2 border-rx p-4 mb-3">
+            <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rx-skeleton flex-shrink-0" />
+                <div className="flex-1 space-y-2 py-1">
+                    <div className="h-3 w-2/3 rx-skeleton" />
+                    <div className="h-3 w-full rx-skeleton" />
+                    <div className="h-3 w-1/3 rx-skeleton" />
+                </div>
+            </div>
+        </div>
+    );
+}
