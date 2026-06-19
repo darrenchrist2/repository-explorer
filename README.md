@@ -1,7 +1,7 @@
 1. Cara menjalankan projek secara lokal:
-a. Clone repository dari GitHub ke direktori lokal menggunakan perintah: git clone <repository-url>
-b. Masuk ke direktori proyek dan instal seluruh dependensi yang dibutuhkan dengan perintah: npm install
-c. Jalankan aplikasi dalam mode development dengan perintah: "npm run dev"
+- Clone repository dari GitHub ke direktori lokal menggunakan perintah: git clone <repository-url>
+- Masuk ke direktori proyek dan instal seluruh dependensi yang dibutuhkan dengan perintah: npm install
+- Jalankan aplikasi dalam mode development dengan perintah: "npm run dev"
 
 2. Keputusan teknis yang diambil:
 - Framework frontend yang digunakan adalah React.js
@@ -16,8 +16,8 @@ Untuk styling, saya menggunakan Tailwind CSS karena pendekatan utility-first yan
 - Melakukan refactoring kode untuk meningkatkan maintainability dan scalability aplikasi.
 
 4. Total waktu yang saya habiskan untuk menyelesaikan proyek ini adalah sekitar 7 jam, yang mencakup:
-a. Analisis kebutuhan dan perencanaan implementasi
-b. Pengembangan frontend
-c. Implementasi fitur utama
-d. Pengujian fungsional
-e. Deployment aplikasi ke Netlify
+- Analisis kebutuhan dan perencanaan implementasi
+- Pengembangan frontend
+- Implementasi fitur utama
+- Pengujian fungsional
+- Deployment aplikasi ke Netlify
