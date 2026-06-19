@@ -217,3 +217,42 @@ function SkeletonCard() {
         </div>
     );
 }
+
+function EmptyState({ icon: Icon, title, description }) {
+    return (
+        <div className="flex flex-col items-center justify-center text-center py-16 px-4">
+            <Icon className="w-7 h-7 text-dim-rx mb-3" />
+            <p className="font-mono-rx text-sm font-semibold mb-1">{title}</p>
+            {description && <p className="text-sm text-dim-rx max-w-sm">{description}</p>}
+        </div>
+    );
+}
+
+function ErrorState({ message, onRetry }) {
+    return (
+        <div className="flex flex-col items-center justify-center text-center py-16 px-4 border-2 border-rx">
+            <AlertTriangle className="w-7 h-7 text-dim-rx mb-3" />
+            <p className="font-mono-rx text-sm font-semibold mb-1">Gagal memuat data</p>
+            <p className="text-sm text-dim-rx max-w-sm mb-4">{message}</p>
+            <button onClick={onRetry} className="flex items-center gap-2 font-mono-rx text-xs uppercase tracking-wide border-2 border-rx px-4 py-2 invert-hover">
+                <RefreshCw className="w-3.5 h-3.5" /> Coba lagi
+            </button>
+        </div>
+    );
+}
+
+function InitialState({ kind, onPick }) {
+    const examples = kind === 'repo' ? EXAMPLES_REPO : EXAMPLES_USER;
+    return (
+        <div className="flex flex-col items-center justify-center text-center py-16 px-4">
+            <p className="font-mono-rx text-sm text-dim-rx mb-4">{'>'} ketik kata kunci untuk mulai mencari, atau coba:</p>
+            <div className="flex flex-wrap justify-center gap-2 max-w-md">
+                {examples.map((ex) => (
+                    <button key={ex} onClick={() => onPick(ex)} className="font-mono-rx text-xs border-2 border-rx px-3 py-1.5 invert-hover">
+                        {ex}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}
