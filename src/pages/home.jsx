@@ -339,3 +339,136 @@ function UserCard({ user, index, isSelected, onSelect, isFavorite, onToggleFavor
         </div>
     );
 }
+
+// PANEL DETAIL
+function DetailPanel({ selected, isFavorite, onToggleFavorite, onClose, userDetail, userDetailLoading, userDetailError }) {
+    if (!selected) {
+        return (
+            <div className="flex flex-col items-center justify-center text-center py-20 px-4 border-2 border-rx h-full">
+                <BookMarked className="w-7 h-7 text-dim-rx mb-3" />
+                <p className="font-mono-rx text-sm text-dim-rx">Pilih repositori atau pengguna untuk melihat detail.</p>
+            </div>
+        );
+    }
+
+    const { kind, item } = selected;
+    const fav = isFavorite(item, kind);
+
+    return (
+        <div className="border-2 border-rx bg-surface-rx">
+            <div className="flex items-center justify-between px-5 py-3 border-b-2 border-rx">
+                <span className="font-mono-rx text-xs uppercase tracking-wide text-dim-rx">Detail {kind === 'repo' ? 'Repositori' : 'Pengguna'}</span>
+                <button onClick={onClose} aria-label="Tutup detail" className="p-1.5 border-2 border-rx invert-hover">
+                    <X className="w-4 h-4" />
+                </button>
+            </div>
+
+            {kind === 'repo' ? (
+                <div className="p-5 sm:p-6">
+                    <div className="flex items-start gap-4 mb-5">
+                        <img src={item.owner && item.owner.avatar_url} alt="" className="w-14 h-14 border-2 border-rx flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
+                            <p className="font-mono-rx text-base sm:text-lg font-bold break-words">{item.full_name}</p>
+                            {item.owner && (
+                                <a href={item.owner.html_url} target="_blank" rel="noreferrer" className="text-xs text-dim-rx hover:text-current font-mono-rx">
+                                    @{item.owner.login}
+                                </a>
+                            )}
+                        </div>
+                        <button
+                            onClick={() => onToggleFavorite(item, kind)}
+                            aria-pressed={fav}
+                            className={`flex-shrink-0 p-2 border-2 ${fav ? 'invert-active border-current' : 'border-rx hover:border-current'}`}
+                        >
+                            <Star className="w-4 h-4" fill={fav ? 'currentColor' : 'none'} />
+                        </button>
+                    </div>
+
+                    {item.description && <p className="text-sm mb-5 leading-relaxed">{item.description}</p>}
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+                        <StatBlock icon={Star} label="Star" value={formatNumber(item.stargazers_count)} />
+                        <StatBlock icon={GitFork} label="Fork" value={formatNumber(item.forks_count)} />
+                        <StatBlock icon={Eye} label="Watching" value={formatNumber(item.watchers_count !== undefined ? item.watchers_count : item.stargazers_count)} />
+                        <StatBlock icon={AlertCircle} label="Issues" value={formatNumber(item.open_issues_count)} />
+                    </div>
+
+                    <div className="space-y-0 mb-5 font-mono-rx text-xs">
+                        {item.language && <DetailRow label="Language">{item.language}</DetailRow>}
+                        {item.license && item.license.name && <DetailRow label="License">{item.license.name}</DetailRow>}
+                        {item.created_at && <DetailRow label="Created">{formatDate(item.created_at)}</DetailRow>}
+                        {item.updated_at && <DetailRow label="Updated">{formatDate(item.updated_at)}</DetailRow>}
+                        {item.pushed_at && <DetailRow label="Last Push">{formatDate(item.pushed_at)}</DetailRow>}
+                        {item.size !== undefined && <DetailRow label="Size">{formatSize(item.size)}</DetailRow>}
+                        {item.default_branch && <DetailRow label="Default Branch">{item.default_branch}</DetailRow>}
+                    </div>
+
+                    {item.topics && item.topics.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mb-5">
+                            {item.topics.slice(0, 12).map((t) => (
+                                <span key={t} className="font-mono-rx text-xs bg-surface2-rx border border-rx px-2 py-1">{t}</span>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-2">
+                        <a href={item.html_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 font-mono-rx text-xs uppercase tracking-wide border-2 border-rx px-4 py-2 invert-hover">
+                            <ExternalLink className="w-3.5 h-3.5" /> Buka di GitHub
+                        </a>
+                        {item.homepage && (
+                            <a href={item.homepage} target="_blank" rel="noreferrer" className="flex items-center gap-2 font-mono-rx text-xs uppercase tracking-wide border-2 border-rx px-4 py-2 invert-hover">
+                                <LinkIcon className="w-3.5 h-3.5" /> Situs proyek
+                            </a>
+                        )}
+                    </div>
+                </div>
+            ) : (
+                <div className="p-5 sm:p-6">
+                    <div className="flex items-start gap-4 mb-5">
+                        <img src={item.avatar_url} alt="" className="w-16 h-16 border-2 border-rx flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
+                            <p className="font-mono-rx text-base sm:text-lg font-bold break-words">{(userDetail && userDetail.name) || item.login}</p>
+                            <p className="text-xs text-dim-rx font-mono-rx">@{item.login}</p>
+                        </div>
+                        <button
+                            onClick={() => onToggleFavorite(item, kind)}
+                            aria-pressed={fav}
+                            className={`flex-shrink-0 p-2 border-2 ${fav ? 'invert-active border-current' : 'border-rx hover:border-current'}`}
+                        >
+                            <Star className="w-4 h-4" fill={fav ? 'currentColor' : 'none'} />
+                        </button>
+                    </div>
+
+                    {userDetailLoading && (
+                        <div className="space-y-2 mb-5">
+                            <div className="h-3 w-full rx-skeleton" />
+                            <div className="h-3 w-2/3 rx-skeleton" />
+                        </div>
+                    )}
+
+                    {userDetailError && <p className="text-sm text-dim-rx mb-5">{userDetailError}</p>}
+
+                    {userDetail && !userDetailLoading && (
+                        <>
+                            {userDetail.bio && <p className="text-sm mb-5 leading-relaxed">{userDetail.bio}</p>}
+                            <div className="grid grid-cols-3 gap-3 mb-5">
+                                <StatBlock icon={UsersIcon} label="Pengikut" value={formatNumber(userDetail.followers)} />
+                                <StatBlock icon={UsersIcon} label="Mengikuti" value={formatNumber(userDetail.following)} />
+                                <StatBlock icon={BookMarked} label="Repositori" value={formatNumber(userDetail.public_repos)} />
+                            </div>
+                            <div className="space-y-0 mb-5 font-mono-rx text-xs">
+                                {userDetail.company && <DetailRow label="Perusahaan">{userDetail.company}</DetailRow>}
+                                {userDetail.location && <DetailRow label="Lokasi">{userDetail.location}</DetailRow>}
+                                {userDetail.created_at && <DetailRow label="Bergabung">{formatDate(userDetail.created_at)}</DetailRow>}
+                            </div>
+                        </>
+                    )}
+
+                    <a href={item.html_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-mono-rx text-xs uppercase tracking-wide border-2 border-rx px-4 py-2 invert-hover">
+                        <ExternalLink className="w-3.5 h-3.5" /> Buka di GitHub
+                    </a>
+                </div>
+            )}
+        </div>
+    );
+}
