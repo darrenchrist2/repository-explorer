@@ -1,16 +1,23 @@
-# React + Vite
+1. Cara menjalankan projek secara lokal:
+a. Clone repository dari GitHub ke direktori lokal menggunakan perintah: git clone <repository-url>
+b. Masuk ke direktori proyek dan instal seluruh dependensi yang dibutuhkan dengan perintah: npm install
+c. Jalankan aplikasi dalam mode development dengan perintah: "npm run dev"
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+2. Keputusan teknis yang diambil:
+- Framework frontend yang digunakan adalah React.js
+Saya memilih React.js karena memiliki arsitektur berbasis komponen yang memudahkan pengembangan aplikasi yang modular, scalable, dan mudah dipelihara. Selain itu, React memiliki ekosistem yang matang serta performa yang baik untuk pengembangan antarmuka pengguna modern.
+- Untuk styling menggunakan Tailwind CSS
+Untuk styling, saya menggunakan Tailwind CSS karena pendekatan utility-first yang ditawarkannya memungkinkan proses pengembangan UI menjadi lebih cepat, konsisten, dan mudah dikelola tanpa perlu menulis banyak custom CSS.
 
-Currently, two official plugins are available:
+3. Apabila tersedia waktu pengembangan lebih lanjut, beberapa peningkatan yang akan saya lakukan antara lain:
+- Meningkatkan pengalaman pengguna (User Experience) dengan penyempurnaan desain antarmuka agar lebih intuitif dan mudah digunakan.
+- Menambahkan animasi dan transisi yang halus untuk meningkatkan kenyamanan interaksi pengguna.
+- Mengoptimalkan responsivitas pada berbagai ukuran layar dan perangkat.
+- Melakukan refactoring kode untuk meningkatkan maintainability dan scalability aplikasi.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+4. Total waktu yang saya habiskan untuk menyelesaikan proyek ini adalah sekitar 7 jam, yang mencakup:
+a. Analisis kebutuhan dan perencanaan implementasi
+b. Pengembangan frontend
+c. Implementasi fitur utama
+d. Pengujian fungsional
+e. Deployment aplikasi ke Netlify
