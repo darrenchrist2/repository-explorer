@@ -42,22 +42,22 @@ function formatNumber(n) {
 function timeAgo(dateStr) {
     if (!dateStr) return '-';
     const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
-    if (diff < 60) return 'baru saja';
+    if (diff < 60) return 'just now';
     const mins = Math.floor(diff / 60);
-    if (mins < 60) return `${mins} menit lalu`;
+    if (mins < 60) return `${mins} minutes ago`;
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours} jam lalu`;
+    if (hours < 24) return `${hours} hours ago`;
     const days = Math.floor(hours / 24);
-    if (days < 30) return `${days} hari lalu`;
+    if (days < 30) return `${days} days ago`;
     const months = Math.floor(days / 30);
-    if (months < 12) return `${months} bulan lalu`;
-    return `${Math.floor(months / 12)} tahun lalu`;
+    if (months < 12) return `${months} months ago`;
+    return `${Math.floor(months / 12)} years ago`;
 }
 
 function formatDate(d) {
     if (!d) return '-';
     try {
-        return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        return new Date(d).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
     } catch (e) {
         return d;
     }
@@ -78,10 +78,10 @@ function buildQuery(kind, q, language) {
 }
 
 function formatError(e) {
-    if (e && e.status === 403) return 'Batas permintaan GitHub API tercapai. Tunggu sebentar lalu coba lagi.';
-    if (e && e.status === 422) return 'Kata kunci pencarian tidak valid. Coba kata kunci lain.';
-    if (e && e.message === 'Failed to fetch') return 'Tidak dapat terhubung ke GitHub API. Periksa koneksi internet Anda.';
-    return (e && e.message) || 'Terjadi kesalahan tak terduga.';
+    if (e && e.status === 403) return 'GitHub API request limit reached. Please wait a bit and try again.';
+    if (e && e.status === 422) return 'The search term is invalid. Try another search term.';
+    if (e && e.message === 'Failed to fetch') return 'Unable to connect to the GitHub API. Please check your internet connection.';
+    return (e && e.message) || 'An unexpected error occurred.';
 }
 
 const SEARCH_PATH = { repo: 'repositories', user: 'users' };
@@ -101,7 +101,7 @@ async function searchGitHub(kind, q, sort, order, page, signal) {
     let data = null;
     try { data = await res.json(); } catch (e) { /* body kosong/non-JSON */ }
     if (!res.ok) {
-        const err = new Error((data && data.message) || `Permintaan gagal (${res.status})`);
+        const err = new Error((data && data.message) || `Request failed (${res.status})`);
         err.status = res.status;
         throw err;
     }
@@ -232,10 +232,10 @@ function ErrorState({ message, onRetry }) {
     return (
         <div className="flex flex-col items-center justify-center text-center py-16 px-4 border-2 border-rx">
             <AlertTriangle className="w-7 h-7 text-dim-rx mb-3" />
-            <p className="font-mono-rx text-sm font-semibold mb-1">Gagal memuat data</p>
+            <p className="font-mono-rx text-sm font-semibold mb-1">Failed to load data</p>
             <p className="text-sm text-dim-rx max-w-sm mb-4">{message}</p>
             <button onClick={onRetry} className="flex items-center gap-2 font-mono-rx text-xs uppercase tracking-wide border-2 border-rx px-4 py-2 invert-hover">
-                <RefreshCw className="w-3.5 h-3.5" /> Coba lagi
+                <RefreshCw className="w-3.5 h-3.5" /> Try again
             </button>
         </div>
     );
@@ -619,7 +619,7 @@ export default function App() {
         fetch(`https://api.github.com/users/${login}`, { headers: { Accept: 'application/vnd.github+json' } })
             .then(async (res) => {
                 const data = await res.json();
-                if (!res.ok) { const err = new Error(data.message || `Gagal memuat profil (${res.status})`); err.status = res.status; throw err; }
+                if (!res.ok) { const err = new Error(data.message || `Failed to load profile (${res.status})`); err.status = res.status; throw err; }
                 return data;
             })
             .then((data) => {
@@ -830,7 +830,7 @@ export default function App() {
                         ) : error ? (
                             <ErrorState message={error} onRetry={fetchPage1} />
                         ) : results.length === 0 ? (
-                            <EmptyState icon={Inbox} title="Tidak ada hasil" description={`Tidak ditemukan ${kind === 'repo' ? 'repositori' : 'pengguna'} untuk "${debouncedQuery}". Coba kata kunci lain.`} />
+                            <EmptyState icon={Inbox} title="No results" description={`No ${kind === 'repo' ? 'repositories' : 'users'} found for "${debouncedQuery}". Try a different search term.`} />
                         ) : (
                             <>
                                 {results.map((item, i) => kind === 'repo' ? (
@@ -843,7 +843,7 @@ export default function App() {
                                 {loadMoreError && (
                                     <div className="text-center py-3">
                                         <p className="font-mono-rx text-xs text-dim-rx mb-2">{loadMoreError}</p>
-                                        <button onClick={loadMore} className="font-mono-rx text-xs uppercase tracking-wide border-2 border-rx px-3 py-1.5 invert-hover">Muat ulang</button>
+                                        <button onClick={loadMore} className="font-mono-rx text-xs uppercase tracking-wide border-2 border-rx px-3 py-1.5 invert-hover">Reload</button>
                                     </div>
                                 )}
                                 {!hasMore && !loadingMore && results.length > 0 && (
