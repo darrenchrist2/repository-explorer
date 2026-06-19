@@ -645,4 +645,17 @@ export default function App() {
             document.body.style.overflow = '';
         };
     }, [selected]);
+
+    const handleKindChange = (k) => {
+        setKind(k);
+        setSelected(null);
+        if (k === 'user') setLanguage('all');
+    };
+
+    const favList = Object.values(favorites)
+        .filter((f) => f.kind === kind)
+        .sort((a, b) => b.savedAt - a.savedAt);
+
+    const sortOptions = kind === 'repo' ? REPO_SORTS : USER_SORTS;
+    const favoritesCount = Object.keys(favorites).length;
 }
