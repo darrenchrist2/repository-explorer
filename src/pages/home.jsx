@@ -7,17 +7,17 @@ import {
 
 // KONSTANTA & HELPER
 const REPO_SORTS = [
-    { value: 'best', label: 'Paling relevan' },
-    { value: 'stars', label: 'Bintang terbanyak' },
-    { value: 'forks', label: 'Fork terbanyak' },
-    { value: 'updated', label: 'Baru diperbarui' },
+    { value: 'best', label: 'Best Match' },
+    { value: 'stars', label: 'Most Stars' },
+    { value: 'forks', label: 'Most Forks' },
+    { value: 'updated', label: 'Recently Updated' },
 ];
 
 const USER_SORTS = [
-    { value: 'best', label: 'Paling relevan' },
-    { value: 'followers', label: 'Pengikut terbanyak' },
-    { value: 'repositories', label: 'Repositori terbanyak' },
-    { value: 'joined', label: 'Baru bergabung' },
+    { value: 'best', label: 'Best Match' },
+    { value: 'followers', label: 'Most Followers' },
+    { value: 'repositories', label: 'Most Repositories' },
+    { value: 'joined', label: 'Recently Joined' },
 ];
 
 const LANGUAGES = [
@@ -245,7 +245,7 @@ function InitialState({ kind, onPick }) {
     const examples = kind === 'repo' ? EXAMPLES_REPO : EXAMPLES_USER;
     return (
         <div className="flex flex-col items-center justify-center text-center py-16 px-4">
-            <p className="font-mono-rx text-sm text-dim-rx mb-4">{'>'} ketik kata kunci untuk mulai mencari, atau coba:</p>
+            <p className="font-mono-rx text-sm text-dim-rx mb-4">{'>'} Type a keyword to start searching, or try:</p>
             <div className="flex flex-wrap justify-center gap-2 max-w-md">
                 {examples.map((ex) => (
                     <button key={ex} onClick={() => onPick(ex)} className="font-mono-rx text-xs border-2 border-rx px-3 py-1.5 invert-hover">
@@ -346,7 +346,7 @@ function DetailPanel({ selected, isFavorite, onToggleFavorite, onClose, userDeta
         return (
             <div className="flex flex-col items-center justify-center text-center py-20 px-4 border-2 border-rx h-full">
                 <BookMarked className="w-7 h-7 text-dim-rx mb-3" />
-                <p className="font-mono-rx text-sm text-dim-rx">Pilih repositori atau pengguna untuk melihat detail.</p>
+                <p className="font-mono-rx text-sm text-dim-rx">Choose a repository or user to view details</p>
             </div>
         );
     }
@@ -357,7 +357,7 @@ function DetailPanel({ selected, isFavorite, onToggleFavorite, onClose, userDeta
     return (
         <div className="border-2 border-rx bg-surface-rx">
             <div className="flex items-center justify-between px-5 py-3 border-b-2 border-rx">
-                <span className="font-mono-rx text-xs uppercase tracking-wide text-dim-rx">Detail {kind === 'repo' ? 'Repositori' : 'Pengguna'}</span>
+                <span className="font-mono-rx text-xs uppercase tracking-wide text-dim-rx">Detail {kind === 'repo' ? 'Repository' : 'User'}</span>
                 <button onClick={onClose} aria-label="Tutup detail" className="p-1.5 border-2 border-rx invert-hover">
                     <X className="w-4 h-4" />
                 </button>
@@ -387,9 +387,9 @@ function DetailPanel({ selected, isFavorite, onToggleFavorite, onClose, userDeta
                     {item.description && <p className="text-sm mb-5 leading-relaxed">{item.description}</p>}
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-                        <StatBlock icon={Star} label="Star" value={formatNumber(item.stargazers_count)} />
-                        <StatBlock icon={GitFork} label="Fork" value={formatNumber(item.forks_count)} />
-                        <StatBlock icon={Eye} label="Watching" value={formatNumber(item.watchers_count !== undefined ? item.watchers_count : item.stargazers_count)} />
+                        <StatBlock icon={Star} label="Stars" value={formatNumber(item.stargazers_count)} />
+                        <StatBlock icon={GitFork} label="Forks" value={formatNumber(item.forks_count)} />
+                        <StatBlock icon={Eye} label="Watchers" value={formatNumber(item.watchers_count !== undefined ? item.watchers_count : item.stargazers_count)} />
                         <StatBlock icon={AlertCircle} label="Issues" value={formatNumber(item.open_issues_count)} />
                     </div>
 
@@ -413,11 +413,11 @@ function DetailPanel({ selected, isFavorite, onToggleFavorite, onClose, userDeta
 
                     <div className="flex flex-wrap gap-2">
                         <a href={item.html_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 font-mono-rx text-xs uppercase tracking-wide border-2 border-rx px-4 py-2 invert-hover">
-                            <ExternalLink className="w-3.5 h-3.5" /> Buka di GitHub
+                            <ExternalLink className="w-3.5 h-3.5" /> Open in GitHub
                         </a>
                         {item.homepage && (
                             <a href={item.homepage} target="_blank" rel="noreferrer" className="flex items-center gap-2 font-mono-rx text-xs uppercase tracking-wide border-2 border-rx px-4 py-2 invert-hover">
-                                <LinkIcon className="w-3.5 h-3.5" /> Situs proyek
+                                <LinkIcon className="w-3.5 h-3.5" /> Project Website
                             </a>
                         )}
                     </div>
@@ -452,20 +452,20 @@ function DetailPanel({ selected, isFavorite, onToggleFavorite, onClose, userDeta
                         <>
                             {userDetail.bio && <p className="text-sm mb-5 leading-relaxed">{userDetail.bio}</p>}
                             <div className="grid grid-cols-3 gap-3 mb-5">
-                                <StatBlock icon={UsersIcon} label="Pengikut" value={formatNumber(userDetail.followers)} />
-                                <StatBlock icon={UsersIcon} label="Mengikuti" value={formatNumber(userDetail.following)} />
-                                <StatBlock icon={BookMarked} label="Repositori" value={formatNumber(userDetail.public_repos)} />
+                                <StatBlock icon={UsersIcon} label="Followers" value={formatNumber(userDetail.followers)} />
+                                <StatBlock icon={UsersIcon} label="Following" value={formatNumber(userDetail.following)} />
+                                <StatBlock icon={BookMarked} label="Repositories" value={formatNumber(userDetail.public_repos)} />
                             </div>
                             <div className="space-y-0 mb-5 font-mono-rx text-xs">
-                                {userDetail.company && <DetailRow label="Perusahaan">{userDetail.company}</DetailRow>}
-                                {userDetail.location && <DetailRow label="Lokasi">{userDetail.location}</DetailRow>}
-                                {userDetail.created_at && <DetailRow label="Bergabung">{formatDate(userDetail.created_at)}</DetailRow>}
+                                {userDetail.company && <DetailRow label="Company">{userDetail.company}</DetailRow>}
+                                {userDetail.location && <DetailRow label="Location">{userDetail.location}</DetailRow>}
+                                {userDetail.created_at && <DetailRow label="Joined">{formatDate(userDetail.created_at)}</DetailRow>}
                             </div>
                         </>
                     )}
 
                     <a href={item.html_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-mono-rx text-xs uppercase tracking-wide border-2 border-rx px-4 py-2 invert-hover">
-                        <ExternalLink className="w-3.5 h-3.5" /> Buka di GitHub
+                        <ExternalLink className="w-3.5 h-3.5" /> Open in GitHub
                     </a>
                 </div>
             )}
@@ -740,7 +740,7 @@ export default function App() {
                             type="text"
                             value={rawQuery}
                             onChange={(e) => setRawQuery(e.target.value)}
-                            placeholder={kind === 'repo' ? 'cari repositori... mis. facebook/react' : 'cari pengguna... mis. torvalds'}
+                            placeholder={kind === 'repo' ? 'search repository... e.g., facebook/react' : 'search user... e.g., torvalds'}
                             className="w-full font-mono-rx text-sm bg-surface-rx border-2 border-rx pl-10 pr-10 py-2.5 placeholder:text-dim-rx"
                             aria-label="Kotak pencarian"
                         />
@@ -757,13 +757,13 @@ export default function App() {
                                 role="tab" aria-selected={kind === 'repo'} onClick={() => handleKindChange('repo')}
                                 className={`flex items-center gap-1.5 px-3 py-2 font-mono-rx text-xs uppercase tracking-wide ${kind === 'repo' ? 'invert-active' : 'text-dim-rx hover:text-current'}`}
                             >
-                                <BookMarked className="w-3.5 h-3.5" /> Repositori
+                                <BookMarked className="w-3.5 h-3.5" /> Repository
                             </button>
                             <button
                                 role="tab" aria-selected={kind === 'user'} onClick={() => handleKindChange('user')}
                                 className={`flex items-center gap-1.5 px-3 py-2 font-mono-rx text-xs uppercase tracking-wide border-l-2 border-rx ${kind === 'user' ? 'invert-active' : 'text-dim-rx hover:text-current'}`}
                             >
-                                <UsersIcon className="w-3.5 h-3.5" /> Pengguna
+                                <UsersIcon className="w-3.5 h-3.5" /> User
                             </button>
                         </div>
 
@@ -791,7 +791,7 @@ export default function App() {
                                         value={language} onChange={(e) => setLanguage(e.target.value)} aria-label="Filter bahasa"
                                         className="font-mono-rx text-xs uppercase tracking-wide bg-surface-rx border-2 border-rx px-2 py-2"
                                     >
-                                        <option value="all">Semua bahasa</option>
+                                        <option value="all">All Languages</option>
                                         {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
                                     </select>
                                 )}
