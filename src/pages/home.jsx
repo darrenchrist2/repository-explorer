@@ -710,7 +710,96 @@ export default function App() {
         }
       `}</style>
 
-                
+            {/* HEADER */}
+            <header className="sticky top-0 z-20 bg-surface-rx border-b-2 border-rx">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                        <span className="font-mono-rx text-base sm:text-lg font-bold tracking-tight select-none">
+                            {'>'} repo-explorer<span className="rx-cursor">_</span>
+                        </span>
+                        <div className="flex items-center gap-2">
+                            <IconButton
+                                icon={Star}
+                                onClick={() => setShowFavoritesOnly((v) => !v)}
+                                active={showFavoritesOnly}
+                                label="Tampilkan favorit"
+                                title={`Favorit (${favoritesCount})`}
+                            />
+                            <IconButton
+                                icon={theme === 'dark' ? Sun : Moon}
+                                onClick={toggleTheme}
+                                label="Ganti tema"
+                                title={theme === 'dark' ? 'Mode terang' : 'Mode gelap'}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dim-rx pointer-events-none" />
+                        <input
+                            type="text"
+                            value={rawQuery}
+                            onChange={(e) => setRawQuery(e.target.value)}
+                            placeholder={kind === 'repo' ? 'cari repositori... mis. facebook/react' : 'cari pengguna... mis. torvalds'}
+                            className="w-full font-mono-rx text-sm bg-surface-rx border-2 border-rx pl-10 pr-10 py-2.5 placeholder:text-dim-rx"
+                            aria-label="Kotak pencarian"
+                        />
+                        {rawQuery && (
+                            <button onClick={() => setRawQuery('')} aria-label="Hapus pencarian" className="absolute right-3 top-1/2 -translate-y-1/2 text-dim-rx hover:text-current">
+                                <X className="w-4 h-4" />
+                            </button>
+                        )}
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                        <div className="inline-flex border-2 border-rx" role="tablist" aria-label="Tipe pencarian">
+                            <button
+                                role="tab" aria-selected={kind === 'repo'} onClick={() => handleKindChange('repo')}
+                                className={`flex items-center gap-1.5 px-3 py-2 font-mono-rx text-xs uppercase tracking-wide ${kind === 'repo' ? 'invert-active' : 'text-dim-rx hover:text-current'}`}
+                            >
+                                <BookMarked className="w-3.5 h-3.5" /> Repositori
+                            </button>
+                            <button
+                                role="tab" aria-selected={kind === 'user'} onClick={() => handleKindChange('user')}
+                                className={`flex items-center gap-1.5 px-3 py-2 font-mono-rx text-xs uppercase tracking-wide border-l-2 border-rx ${kind === 'user' ? 'invert-active' : 'text-dim-rx hover:text-current'}`}
+                            >
+                                <UsersIcon className="w-3.5 h-3.5" /> Pengguna
+                            </button>
+                        </div>
+
+                        {!showFavoritesOnly && (
+                            <>
+                                <select
+                                    value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Urutkan hasil"
+                                    className="font-mono-rx text-xs uppercase tracking-wide bg-surface-rx border-2 border-rx px-2 py-2"
+                                >
+                                    {sortOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                </select>
+
+                                <button
+                                    disabled={sort === 'best'}
+                                    onClick={() => setOrder((o) => (o === 'desc' ? 'asc' : 'desc'))}
+                                    aria-label="Balik urutan"
+                                    title={order === 'desc' ? 'Tertinggi ke terendah' : 'Terendah ke tertinggi'}
+                                    className={`p-2 border-2 border-rx ${sort === 'best' ? 'opacity-30 cursor-not-allowed' : 'invert-hover'}`}
+                                >
+                                    <ArrowUpDown className="w-3.5 h-3.5" />
+                                </button>
+
+                                {kind === 'repo' && (
+                                    <select
+                                        value={language} onChange={(e) => setLanguage(e.target.value)} aria-label="Filter bahasa"
+                                        className="font-mono-rx text-xs uppercase tracking-wide bg-surface-rx border-2 border-rx px-2 py-2"
+                                    >
+                                        <option value="all">Semua bahasa</option>
+                                        {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
+                                    </select>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            </header>
         </div>
     );
 }
