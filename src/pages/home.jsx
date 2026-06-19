@@ -117,3 +117,31 @@ function useDebouncedValue(value, delay) {
     }, [value, delay]);
     return debounced;
 }
+
+function useTheme() {
+    const [theme, setTheme] = useState('light');
+
+    useEffect(() => {
+        try {
+            const savedTheme = localStorage.getItem('rx:theme');
+
+            if (savedTheme === 'light' || savedTheme === 'dark') {
+                setTheme(savedTheme);
+            }
+        } catch (e) { }
+    }, []);
+
+    const toggleTheme = useCallback(() => {
+        setTheme((prev) => {
+            const next = prev === 'light' ? 'dark' : 'light';
+
+            try {
+                localStorage.setItem('rx:theme', next);
+            } catch (e) { }
+
+            return next;
+        });
+    }, []);
+
+    return [theme, toggleTheme];
+}
