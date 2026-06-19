@@ -869,6 +869,28 @@ export default function App() {
                     </div>
                 </div>
             </main>
+
+            {/* Panel detail mobile/tablet (overlay) */}
+            {selected && (
+                <div className="fixed inset-0 z-30 lg:hidden" role="dialog" aria-modal="true">
+                    <div className="absolute inset-0 bg-black/50" onClick={() => setSelected(null)} />
+                    <div className="rx-sheet-enter absolute inset-x-0 bottom-0 top-12 overflow-y-auto">
+                        <DetailPanel
+                            selected={selected}
+                            isFavorite={isFavoriteFn}
+                            onToggleFavorite={toggleFavorite}
+                            onClose={() => setSelected(null)}
+                            userDetail={userDetail}
+                            userDetailLoading={userDetailLoading}
+                            userDetailError={userDetailError}
+                        />
+                    </div>
+                </div>
+            )}
+
+            <footer className="border-t-2 border-rx py-4">
+                <p className="text-center font-mono-rx text-xs text-dim-rx px-4">Repository Explorer - Darren Christian</p>
+            </footer>
         </div>
     );
 }
