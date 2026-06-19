@@ -33,10 +33,10 @@ function formatNumber(n) {
     if (n < 1000) return String(n);
     if (n < 1000000) {
         const v = n / 1000;
-        return `${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}rb`;
+        return `${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}k`;
     }
     const v = n / 1000000;
-    return `${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}jt`;
+    return `${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}m`;
 }
 
 function timeAgo(dateStr) {
