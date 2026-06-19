@@ -472,3 +472,42 @@ function DetailPanel({ selected, isFavorite, onToggleFavorite, onClose, userDeta
         </div>
     );
 }
+
+// MAIN APP
+export default function App() {
+    const initialParams = (() => {
+        try { return new URLSearchParams(window.location.search); } catch (e) { return new URLSearchParams(); }
+    })();
+
+    const [theme, toggleTheme] = useTheme();
+    const { favorites, toggleFavorite } = useFavorites();
+
+    const [rawQuery, setRawQuery] = useState(initialParams.get('q') || '');
+    const [kind, setKind] = useState(initialParams.get('kind') === 'user' ? 'user' : 'repo');
+    const [sort, setSort] = useState(initialParams.get('sort') || 'best');
+    const [order, setOrder] = useState(initialParams.get('order') || 'desc');
+    const [language, setLanguage] = useState(initialParams.get('lang') || 'all');
+    const [showFavoritesOnly, setShowFavoritesOnly] = useState(initialParams.get('fav') === '1');
+
+    const [results, setResults] = useState([]);
+    const [totalCount, setTotalCount] = useState(0);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [error, setError] = useState(null);
+    const [loadMoreError, setLoadMoreError] = useState(null);
+    const [hasMore, setHasMore] = useState(false);
+
+    const [selected, setSelected] = useState(null); // { kind, item }
+    const [userDetail, setUserDetail] = useState(null);
+    const [userDetailLoading, setUserDetailLoading] = useState(false);
+    const [userDetailError, setUserDetailError] = useState(null);
+
+    const debouncedQuery = useDebouncedValue(rawQuery, 500);
+    const cache = useRef(new Map());
+    const userDetailCache = useRef(new Map());
+    const controllerRef = useRef(null);
+    const sentinelRef = useRef(null);
+
+    const isFavoriteFn = useCallback((item, k) => !!favorites[`${k}:${item.id}`], [favorites]);
+}
