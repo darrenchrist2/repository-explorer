@@ -68,3 +68,42 @@ function formatSize(kb) {
     if (kb < 1024) return `${kb} KB`;
     return `${(kb / 1024).toFixed(1)} MB`;
 }
+
+function buildQuery(kind, q, language) {
+    let query = q.trim();
+    if (kind === 'repo' && language && language !== 'all') {
+        query += ` language:${language}`;
+    }
+    return query;
+}
+
+function formatError(e) {
+    if (e && e.status === 403) return 'Batas permintaan GitHub API tercapai. Tunggu sebentar lalu coba lagi.';
+    if (e && e.status === 422) return 'Kata kunci pencarian tidak valid. Coba kata kunci lain.';
+    if (e && e.message === 'Failed to fetch') return 'Tidak dapat terhubung ke GitHub API. Periksa koneksi internet Anda.';
+    return (e && e.message) || 'Terjadi kesalahan tak terduga.';
+}
+
+const SEARCH_PATH = { repo: 'repositories', user: 'users' };
+
+async function searchGitHub(kind, q, sort, order, page, signal) {
+    const params = new URLSearchParams();
+    params.set('q', q);
+    if (sort && sort !== 'best') params.set('sort', sort);
+    params.set('order', order);
+    params.set('per_page', '20');
+    params.set('page', String(page));
+    const url = `https://api.github.com/search/${SEARCH_PATH[kind]}?${params.toString()}`;
+    const res = await fetch(url, {
+        signal,
+        headers: { Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' },
+    });
+    let data = null;
+    try { data = await res.json(); } catch (e) { /* body kosong/non-JSON */ }
+    if (!res.ok) {
+        const err = new Error((data && data.message) || `Permintaan gagal (${res.status})`);
+        err.status = res.status;
+        throw err;
+    }
+    return data;
+}
