@@ -800,6 +800,75 @@ export default function App() {
                     </div>
                 </div>
             </header>
+
+            {/* MAIN */}
+            <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-1">
+                        {showFavoritesOnly ? (
+                            <p className="font-mono-rx text-xs text-dim-rx mb-3">{favList.length} {kind === 'repo' ? 'repositori' : 'pengguna'} difavoritkan</p>
+                        ) : (
+                            !loading && !error && debouncedQuery.trim() && (
+                                <p className="font-mono-rx text-xs text-dim-rx mb-3">{totalCount.toLocaleString('id-ID')} {kind === 'repo' ? 'repositori' : 'pengguna'} ditemukan</p>
+                            )
+                        )}
+
+                        {showFavoritesOnly ? (
+                            favList.length === 0 ? (
+                                <EmptyState icon={Star} title="Belum ada favorit" description={`Tandai ${kind === 'repo' ? 'repositori' : 'pengguna'} dengan ikon bintang untuk menyimpannya di sini.`} />
+                            ) : (
+                                favList.map((item, i) => kind === 'repo' ? (
+                                    <RepoCard key={item.id} repo={item} index={i} isSelected={!!selected && selected.item.id === item.id} onSelect={(it) => setSelected({ kind: 'repo', item: it })} isFavorite={isFavoriteFn(item, 'repo')} onToggleFavorite={(it) => toggleFavorite(it, 'repo')} />
+                                ) : (
+                                    <UserCard key={item.id} user={item} index={i} isSelected={!!selected && selected.item.id === item.id} onSelect={(it) => setSelected({ kind: 'user', item: it })} isFavorite={isFavoriteFn(item, 'user')} onToggleFavorite={(it) => toggleFavorite(it, 'user')} />
+                                ))
+                            )
+                        ) : !debouncedQuery.trim() ? (
+                            <InitialState kind={kind} onPick={setRawQuery} />
+                        ) : loading ? (
+                            Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+                        ) : error ? (
+                            <ErrorState message={error} onRetry={fetchPage1} />
+                        ) : results.length === 0 ? (
+                            <EmptyState icon={Inbox} title="Tidak ada hasil" description={`Tidak ditemukan ${kind === 'repo' ? 'repositori' : 'pengguna'} untuk "${debouncedQuery}". Coba kata kunci lain.`} />
+                        ) : (
+                            <>
+                                {results.map((item, i) => kind === 'repo' ? (
+                                    <RepoCard key={item.id} repo={item} index={i} isSelected={!!selected && selected.item.id === item.id} onSelect={(it) => setSelected({ kind: 'repo', item: it })} isFavorite={isFavoriteFn(item, 'repo')} onToggleFavorite={(it) => toggleFavorite(it, 'repo')} />
+                                ) : (
+                                    <UserCard key={item.id} user={item} index={i} isSelected={!!selected && selected.item.id === item.id} onSelect={(it) => setSelected({ kind: 'user', item: it })} isFavorite={isFavoriteFn(item, 'user')} onToggleFavorite={(it) => toggleFavorite(it, 'user')} />
+                                ))}
+                                <div ref={sentinelRef} className="h-4" />
+                                {loadingMore && <SkeletonCard />}
+                                {loadMoreError && (
+                                    <div className="text-center py-3">
+                                        <p className="font-mono-rx text-xs text-dim-rx mb-2">{loadMoreError}</p>
+                                        <button onClick={loadMore} className="font-mono-rx text-xs uppercase tracking-wide border-2 border-rx px-3 py-1.5 invert-hover">Muat ulang</button>
+                                    </div>
+                                )}
+                                {!hasMore && !loadingMore && results.length > 0 && (
+                                    <p className="text-center font-mono-rx text-xs text-dim-rx py-4">— akhir hasil —</p>
+                                )}
+                            </>
+                        )}
+                    </div>
+
+                    {/* Panel detail desktop */}
+                    <div className="hidden lg:block lg:col-span-2">
+                        <div className="sticky top-20 max-h-screen overflow-y-auto">
+                            <DetailPanel
+                                selected={selected}
+                                isFavorite={isFavoriteFn}
+                                onToggleFavorite={toggleFavorite}
+                                onClose={() => setSelected(null)}
+                                userDetail={userDetail}
+                                userDetailLoading={userDetailLoading}
+                                userDetailError={userDetailError}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
     );
 }
