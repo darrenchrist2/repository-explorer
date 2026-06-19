@@ -145,3 +145,60 @@ function useTheme() {
 
     return [theme, toggleTheme];
 }
+
+function useFavorites() {
+    const [favorites, setFavorites] = useState({});
+
+    useEffect(() => {
+        try {
+            const savedFavorites = localStorage.getItem('rx:favorites');
+
+            if (savedFavorites) {
+                setFavorites(JSON.parse(savedFavorites));
+            }
+        } catch (e) { }
+    }, []);
+
+    const toggleFavorite = useCallback((item, kind) => {
+        setFavorites((prev) => {
+            const id = `${kind}:${item.id}`;
+            const next = { ...prev };
+
+            if (next[id]) {
+                delete next[id];
+            } else {
+                next[id] = {
+                    ...item,
+                    kind,
+                    savedAt: Date.now(),
+                };
+            }
+
+            try {
+                localStorage.setItem(
+                    'rx:favorites',
+                    JSON.stringify(next)
+                );
+            } catch (e) { }
+
+            return next;
+        });
+    }, []);
+
+    return { favorites, toggleFavorite };
+}
+
+// KOMPONEN KECIL UNTUK FAVOURITE DAN GANTI THEME
+function IconButton({ icon: Icon, onClick, active, label, title }) {
+    return (
+        <button
+            onClick={onClick}
+            aria-label={label}
+            title={title || label}
+            aria-pressed={!!active}
+            className={`relative p-2.5 border-2 border-rx flex-shrink-0 transition-colors ${active ? 'invert-active' : 'invert-hover'}`}
+        >
+            <Icon className="w-4 h-4" />
+        </button>
+    );
+}
