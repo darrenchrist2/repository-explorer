@@ -326,7 +326,7 @@ function UserCard({ user, index, isSelected, onSelect, isFavorite, onToggleFavor
             <img src={user.avatar_url} alt="" className="w-11 h-11 border-2 border-rx flex-shrink-0" />
             <div className="min-w-0 flex-1">
                 <p className="font-mono-rx text-sm font-semibold truncate">{user.login}</p>
-                <p className="text-xs text-dim-rx font-mono-rx uppercase tracking-wide">{user.type === 'Organization' ? 'Organisasi' : 'Pengguna'}</p>
+                <p className="text-xs text-dim-rx font-mono-rx uppercase tracking-wide">{user.type === 'Organization' ? 'Organization' : 'User'}</p>
             </div>
             <button
                 onClick={(e) => { e.stopPropagation(); onToggleFavorite(user); }}
@@ -806,10 +806,10 @@ export default function App() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-1">
                         {showFavoritesOnly ? (
-                            <p className="font-mono-rx text-xs text-dim-rx mb-3">{favList.length} {kind === 'repo' ? 'repositori' : 'pengguna'} difavoritkan</p>
+                            <p className="font-mono-rx text-xs text-dim-rx mb-3">{favList.length} {kind === 'repo' ? 'repository' : 'user'} added to favorites</p>
                         ) : (
                             !loading && !error && debouncedQuery.trim() && (
-                                <p className="font-mono-rx text-xs text-dim-rx mb-3">{totalCount.toLocaleString('id-ID')} {kind === 'repo' ? 'repositori' : 'pengguna'} ditemukan</p>
+                                <p className="font-mono-rx text-xs text-dim-rx mb-3">{totalCount.toLocaleString('id-ID')} {kind === 'repo' ? 'repository' : 'user'} found</p>
                             )
                         )}
 
