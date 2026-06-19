@@ -256,3 +256,86 @@ function InitialState({ kind, onPick }) {
         </div>
     );
 }
+
+function StatBlock({ icon: Icon, label, value }) {
+    return (
+        <div className="border-2 border-rx p-3">
+            <div className="flex items-center gap-1.5 text-dim-rx mb-1">
+                <Icon className="w-3 h-3" />
+                <span className="font-mono-rx text-xs uppercase tracking-wide">{label}</span>
+            </div>
+            <p className="font-mono-rx text-lg font-bold">{value}</p>
+        </div>
+    );
+}
+
+function DetailRow({ label, children }) {
+    return (
+        <div className="flex items-center justify-between gap-4 border-b border-rx py-1.5">
+            <span className="text-dim-rx uppercase tracking-wide flex-shrink-0">{label}</span>
+            <span className="text-right break-words">{children}</span>
+        </div>
+    );
+}
+
+function RepoCard({ repo, index, isSelected, onSelect, isFavorite, onToggleFavorite }) {
+    return (
+        <div
+            onClick={() => onSelect(repo)}
+            style={{ animationDelay: `${Math.min(index, 10) * 40}ms` }}
+            className={`rx-fade-up cursor-pointer border-2 ${isSelected ? 'border-current' : 'border-rx'} bg-surface-rx p-4 mb-3 transition-colors hover:border-current`}
+        >
+            <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3 min-w-0">
+                    <img src={repo.owner && repo.owner.avatar_url} alt="" className="w-9 h-9 border-2 border-rx flex-shrink-0" />
+                    <div className="min-w-0">
+                        <p className="font-mono-rx text-sm font-semibold truncate">{repo.full_name}</p>
+                        {repo.description && <p className="text-sm text-dim-rx mt-1 rx-clamp-2">{repo.description}</p>}
+                    </div>
+                </div>
+                <button
+                    onClick={(e) => { e.stopPropagation(); onToggleFavorite(repo); }}
+                    aria-label="Tandai favorit"
+                    aria-pressed={isFavorite}
+                    className={`flex-shrink-0 p-1.5 border-2 ${isFavorite ? 'invert-active border-current' : 'border-rx text-dim-rx hover:text-current hover:border-current'}`}
+                >
+                    <Star className="w-3.5 h-3.5" fill={isFavorite ? 'currentColor' : 'none'} />
+                </button>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 font-mono-rx text-xs text-dim-rx">
+                {repo.language && (
+                    <span className="flex items-center gap-1">
+                        <span className="inline-block w-2 h-2 bg-current" />{repo.language}
+                    </span>
+                )}
+                <span className="flex items-center gap-1"><Star className="w-3 h-3" />{formatNumber(repo.stargazers_count)}</span>
+                <span className="flex items-center gap-1"><GitFork className="w-3 h-3" />{formatNumber(repo.forks_count)}</span>
+                <span>{timeAgo(repo.updated_at)}</span>
+            </div>
+        </div>
+    );
+}
+
+function UserCard({ user, index, isSelected, onSelect, isFavorite, onToggleFavorite }) {
+    return (
+        <div
+            onClick={() => onSelect(user)}
+            style={{ animationDelay: `${Math.min(index, 10) * 40}ms` }}
+            className={`rx-fade-up cursor-pointer border-2 ${isSelected ? 'border-current' : 'border-rx'} bg-surface-rx p-4 mb-3 flex items-center gap-3 transition-colors hover:border-current`}
+        >
+            <img src={user.avatar_url} alt="" className="w-11 h-11 border-2 border-rx flex-shrink-0" />
+            <div className="min-w-0 flex-1">
+                <p className="font-mono-rx text-sm font-semibold truncate">{user.login}</p>
+                <p className="text-xs text-dim-rx font-mono-rx uppercase tracking-wide">{user.type === 'Organization' ? 'Organisasi' : 'Pengguna'}</p>
+            </div>
+            <button
+                onClick={(e) => { e.stopPropagation(); onToggleFavorite(user); }}
+                aria-label="Tandai favorit"
+                aria-pressed={isFavorite}
+                className={`flex-shrink-0 p-1.5 border-2 ${isFavorite ? 'invert-active border-current' : 'border-rx text-dim-rx hover:text-current hover:border-current'}`}
+            >
+                <Star className="w-3.5 h-3.5" fill={isFavorite ? 'currentColor' : 'none'} />
+            </button>
+        </div>
+    );
+}
