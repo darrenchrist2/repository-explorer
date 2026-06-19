@@ -15,7 +15,7 @@ Untuk styling, saya menggunakan Tailwind CSS karena pendekatan utility-first yan
 - Mengoptimalkan responsivitas pada berbagai ukuran layar dan perangkat.
 - Melakukan refactoring kode untuk meningkatkan maintainability dan scalability aplikasi.
 
-4. Total waktu yang saya habiskan untuk menyelesaikan proyek ini adalah sekitar 7 jam, yang mencakup:
+4. Total waktu yang saya habiskan untuk menyelesaikan proyek ini adalah sekitar 6 jam, yang mencakup:
 - Analisis kebutuhan dan perencanaan implementasi
 - Pengembangan frontend
 - Implementasi fitur utama
