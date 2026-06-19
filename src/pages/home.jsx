@@ -855,7 +855,7 @@ export default function App() {
 
                     {/* Panel detail desktop */}
                     <div className="hidden lg:block lg:col-span-2">
-                        <div className="sticky top-20 max-h-screen overflow-y-auto">
+                        <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto pr-2">
                             <DetailPanel
                                 selected={selected}
                                 isFavorite={isFavoriteFn}
