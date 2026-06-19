@@ -510,4 +510,139 @@ export default function App() {
     const sentinelRef = useRef(null);
 
     const isFavoriteFn = useCallback((item, k) => !!favorites[`${k}:${item.id}`], [favorites]);
+
+    // sinkronisasi URL (query params)
+    useEffect(() => {
+        try {
+            const params = new URLSearchParams();
+            if (rawQuery) params.set('q', rawQuery);
+            if (kind !== 'repo') params.set('kind', kind);
+            if (sort !== 'best') params.set('sort', sort);
+            if (order !== 'desc') params.set('order', order);
+            if (language !== 'all') params.set('lang', language);
+            if (showFavoritesOnly) params.set('fav', '1');
+            const qs = params.toString();
+            const newUrl = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+            window.history.replaceState(null, '', newUrl);
+        } catch (e) { /* lingkungan sandbox mungkin membatasi History API */ }
+    }, [rawQuery, kind, sort, order, language, showFavoritesOnly]);
+
+    // pencarian halaman pertama
+    const fetchPage1 = useCallback(async () => {
+        if (showFavoritesOnly) return;
+        const q = debouncedQuery.trim();
+        if (!q) {
+            setResults([]); setTotalCount(0); setHasMore(false); setError(null); setLoading(false);
+            return;
+        }
+        if (controllerRef.current) controllerRef.current.abort();
+        const controller = new AbortController();
+        controllerRef.current = controller;
+        setLoading(true);
+        setError(null);
+        setLoadMoreError(null);
+        const fullQuery = buildQuery(kind, q, language);
+        const cacheKey = `${kind}|${fullQuery}|${sort}|${order}|1`;
+        try {
+            let data = cache.current.get(cacheKey);
+            if (!data) {
+                data = await searchGitHub(kind, fullQuery, sort, order, 1, controller.signal);
+                if (cache.current.size > 150) cache.current.clear();
+                cache.current.set(cacheKey, data);
+            }
+            setResults(data.items || []);
+            setTotalCount(data.total_count || 0);
+            setPage(1);
+            setHasMore((data.items || []).length === 20 && (data.total_count || 0) > 20);
+        } catch (e) {
+            if (e.name === 'AbortError') return;
+            setError(formatError(e));
+            setResults([]); setTotalCount(0); setHasMore(false);
+        } finally {
+            setLoading(false);
+        }
+    }, [kind, debouncedQuery, sort, order, language, showFavoritesOnly]);
+
+    useEffect(() => { fetchPage1(); }, [fetchPage1]);
+
+    // infinite scroll: halaman berikutnya
+    const loadMore = useCallback(async () => {
+        if (showFavoritesOnly || loading || loadingMore || !hasMore) return;
+        const q = debouncedQuery.trim();
+        if (!q) return;
+        const nextPage = page + 1;
+        setLoadingMore(true);
+        setLoadMoreError(null);
+        const fullQuery = buildQuery(kind, q, language);
+        const cacheKey = `${kind}|${fullQuery}|${sort}|${order}|${nextPage}`;
+        try {
+            let data = cache.current.get(cacheKey);
+            if (!data) {
+                data = await searchGitHub(kind, fullQuery, sort, order, nextPage);
+                if (cache.current.size > 150) cache.current.clear();
+                cache.current.set(cacheKey, data);
+            }
+            setResults((prev) => [...prev, ...(data.items || [])]);
+            setPage(nextPage);
+            const loadedCount = nextPage * 20;
+            setHasMore(loadedCount < Math.min(data.total_count || 0, 1000) && (data.items || []).length === 20);
+        } catch (e) {
+            if (e.name !== 'AbortError') setLoadMoreError(formatError(e));
+        } finally {
+            setLoadingMore(false);
+        }
+    }, [showFavoritesOnly, loading, loadingMore, hasMore, debouncedQuery, page, kind, language, sort, order]);
+
+    useEffect(() => {
+        const el = sentinelRef.current;
+        if (!el || showFavoritesOnly) return;
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) loadMore();
+        }, { rootMargin: '300px 0px' });
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [loadMore, showFavoritesOnly]);
+
+    // detail pengguna
+    useEffect(() => {
+        if (!selected || selected.kind !== 'user') { setUserDetail(null); setUserDetailError(null); return; }
+        const login = selected.item.login;
+        if (userDetailCache.current.has(login)) {
+            setUserDetail(userDetailCache.current.get(login));
+            setUserDetailError(null);
+            return;
+        }
+        let cancelled = false;
+        setUserDetail(null);
+        setUserDetailLoading(true);
+        setUserDetailError(null);
+        fetch(`https://api.github.com/users/${login}`, { headers: { Accept: 'application/vnd.github+json' } })
+            .then(async (res) => {
+                const data = await res.json();
+                if (!res.ok) { const err = new Error(data.message || `Gagal memuat profil (${res.status})`); err.status = res.status; throw err; }
+                return data;
+            })
+            .then((data) => {
+                if (cancelled) return;
+                userDetailCache.current.set(login, data);
+                setUserDetail(data);
+            })
+            .catch((e) => { if (!cancelled) setUserDetailError(formatError(e)); })
+            .finally(() => { if (!cancelled) setUserDetailLoading(false); });
+        return () => { cancelled = true; };
+    }, [selected]);
+
+    // tutup detail dengan tombol Escape & kunci scroll mobile
+    useEffect(() => {
+        if (!selected) return;
+        const onKey = (e) => { if (e.key === 'Escape') setSelected(null); };
+        window.addEventListener('keydown', onKey);
+        if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+            document.body.style.overflow = 'hidden';
+        }
+        return () => {
+            window.removeEventListener('keydown', onKey);
+            document.body.style.overflow = '';
+        };
+    }, [selected]);
 }
