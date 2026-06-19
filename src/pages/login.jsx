@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
     const navigate = useNavigate();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('darren');
+    const [password, setPassword] = useState('123');
     const [showPassword, setShowPassword] = useState(false);
     const [focusedField, setFocusedField] = useState(null);
     const [status, setStatus] = useState('idle'); // idle | loading | success | error
@@ -12,12 +12,12 @@ export default function LoginPage() {
     const [savedData, setSavedData] = useState(null);
     const [showDebug, setShowDebug] = useState(false);
 
-    // Muat font display (Instrument Serif) + mono (JetBrains Mono) untuk aksen tipografi
+    // Muat font display
     useEffect(() => {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href =
-            'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap';
+            'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap';
         document.head.appendChild(link);
         return () => document.head.removeChild(link);
     }, []);
