@@ -135,7 +135,7 @@ export default function LoginPage() {
                             >
                                 Welcome!
                             </p>
-                            <h1 className="text-4xl italic text-black sm:text-5xl" style={serif}>
+                            <h1 className="text-4xl text-black sm:text-5xl" style={serif}>
                                 Login
                             </h1>
                         </div>
@@ -251,7 +251,7 @@ export default function LoginPage() {
                                 <path d="M4 12.5l5 5L20 6.5" />
                             </svg>
                         </div>
-                        <h2 className="text-3xl italic text-black" style={serif}>
+                        <h2 className="text-3xl text-black" style={serif}>
                             Berhasil masuk
                         </h2>
                         <p className="mt-2 text-sm text-neutral-500">
