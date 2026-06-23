@@ -248,7 +248,7 @@ function InitialState({ kind, onPick }) {
             <p className="font-mono-rx text-sm text-dim-rx mb-4">{'>'} Type a keyword to start searching, or try:</p>
             <div className="flex flex-wrap justify-center gap-2 max-w-md">
                 {examples.map((ex) => (
-                    <button key={ex} onClick={() => onPick(ex)} className="font-mono-rx text-xs border-2 border-rx px-3 py-1.5 invert-hover">
+                    <button key={ex} onClick={() => onPick(ex)} className="cursor-pointer font-mono-rx text-xs border-2 border-rx px-3 py-1.5 invert-hover">
                         {ex}
                     </button>
                 ))}
@@ -745,7 +745,7 @@ export default function App() {
                             aria-label="Kotak pencarian"
                         />
                         {rawQuery && (
-                            <button onClick={() => setRawQuery('')} aria-label="Hapus pencarian" className="absolute right-3 top-1/2 -translate-y-1/2 text-dim-rx hover:text-current">
+                            <button onClick={() => setRawQuery('')} aria-label="Hapus pencarian" className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-dim-rx hover:text-current">
                                 <X className="w-4 h-4" />
                             </button>
                         )}
