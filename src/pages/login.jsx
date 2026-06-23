@@ -198,7 +198,7 @@ export default function LoginPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword((s) => !s)}
-                                    className="absolute right-0 top-4 flex h-9 w-9 items-center justify-center text-neutral-400 transition-colors duration-200 hover:text-black"
+                                    className="cursor-pointer absolute right-0 top-4 flex h-9 w-9 items-center justify-center text-neutral-400 transition-colors duration-200 hover:text-black"
                                     aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
                                 >
                                     {showPassword ? (
@@ -227,7 +227,7 @@ export default function LoginPage() {
                             <button
                                 type="submit"
                                 disabled={status === 'loading'}
-                                className="login-fade-up group relative mt-2 w-full overflow-hidden border-2 border-black bg-black py-4 text-sm font-medium uppercase tracking-[0.25em] text-white transition-colors duration-300 hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
+                                className="cursor-pointer login-fade-up group relative mt-2 w-full overflow-hidden border-2 border-black bg-black py-4 text-sm font-medium uppercase tracking-[0.25em] text-white transition-colors duration-300 hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
                                 style={{ animationDelay: '300ms' }}
                             >
                                 {status === 'loading' ? (
